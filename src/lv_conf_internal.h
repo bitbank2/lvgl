@@ -2331,6 +2331,15 @@
     #endif
 #endif
 
+/*PNGDEC decoder library*/
+#ifndef LV_USE_PNGDEC
+    #ifdef CONFIG_LV_USE_PNGDEC
+        #define LV_USE_PNGDEC CONFIG_LV_USE_PNGDEC
+    #else
+        #define LV_USE_PNGDEC 0
+    #endif
+#endif
+
 /*PNG decoder(libpng) library*/
 #ifndef LV_USE_LIBPNG
     #ifdef CONFIG_LV_USE_LIBPNG
@@ -2346,6 +2355,15 @@
         #define LV_USE_BMP CONFIG_LV_USE_BMP
     #else
         #define LV_USE_BMP 0
+    #endif
+#endif
+
+/* JPEGDEC decoder library*/
+#ifndef LV_USE_JPEGDEC
+    #ifdef CONFIG_LV_USE_JPEGDEC
+        #define LV_USE_JPEGDEC CONFIG_LV_USE_JPEGDEC
+    #else
+        #define LV_USE_JPEGDEC 0
     #endif
 #endif
 
