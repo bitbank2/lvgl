@@ -25,14 +25,14 @@
 #define __LINUX__
 
 #if defined( __MACH__ ) || defined( __LINUX__ ) || defined( __MCUXPRESSO )
-#include <stdlib.h>
-#include <string.h>
-#include <stdint.h>
-#include <stdio.h>
-#define memcpy_P memcpy
-#define PROGMEM
+    #include <stdlib.h>
+    #include <string.h>
+    #include <stdint.h>
+    #include <stdio.h>
+    #define memcpy_P memcpy
+    #define PROGMEM
 #else
-#include <Arduino.h>
+    #include <Arduino.h>
 #endif
 #include "zutil.h"
 #include "inftrees.h"
@@ -41,13 +41,13 @@
 // PNG Decoder
 // Written by Larry Bank
 // Copyright (c) 2021 BitBank Software, Inc.
-// 
+//
 // Designed to decode most PNG images (1-32 bpp)
 // using less than 48K of RAM
 //
 #ifndef FALSE
-#define FALSE 0
-#define TRUE 1
+    #define FALSE 0
+    #define TRUE 1
 #endif
 /* Defines and variables */
 #define PNG_FILE_BUF_SIZE 2048
@@ -56,7 +56,7 @@
 #define PNG_MAX_BUFFERED_PIXELS ((480*4 + 1)*2)
 // PNG filter type
 enum {
-    PNG_FILTER_NONE=0,
+    PNG_FILTER_NONE = 0,
     PNG_FILTER_SUB,
     PNG_FILTER_UP,
     PNG_FILTER_AVG,
@@ -72,11 +72,11 @@ enum {
 
 // source pixel type
 enum {
-  PNG_PIXEL_GRAYSCALE=0,
-    PNG_PIXEL_TRUECOLOR=2,
-    PNG_PIXEL_INDEXED=3,
-    PNG_PIXEL_GRAY_ALPHA=4,
-    PNG_PIXEL_TRUECOLOR_ALPHA=6
+    PNG_PIXEL_GRAYSCALE = 0,
+    PNG_PIXEL_TRUECOLOR = 2,
+    PNG_PIXEL_INDEXED = 3,
+    PNG_PIXEL_GRAY_ALPHA = 4,
+    PNG_PIXEL_TRUECOLOR_ALPHA = 6
 };
 // RGB565 endianness
 enum {
@@ -85,7 +85,7 @@ enum {
 };
 
 enum {
-    PNG_MEM_RAM=0,
+    PNG_MEM_RAM = 0,
     PNG_MEM_FLASH
 };
 
@@ -101,54 +101,51 @@ enum {
     PNG_TOO_BIG
 };
 
-typedef struct png_draw_tag
-{
+typedef struct png_draw_tag {
     int y; // starting x,y of this line
     int iWidth; // size of this line
     int iPitch; // bytes per line
     int iPixelType; // PNG pixel type (0,2,3,4,6)
     int iBpp; // bits per color stimulus
     int iHasAlpha; // flag indicating the presence of an alpha palette
-    void *pUser; // user supplied pointer
-    uint8_t *pPalette;
-    uint16_t *pFastPalette;
-    uint8_t *pPixels;
+    void * pUser; // user supplied pointer
+    uint8_t * pPalette;
+    uint16_t * pFastPalette;
+    uint8_t * pPixels;
 } PNGDRAW;
 
-typedef struct png_file_tag
-{
-  int32_t iPos; // current file position
-  int32_t iSize; // file size
-  uint8_t *pData; // memory file pointer
-  void * fHandle; // class pointer to File/SdFat or whatever you want
+typedef struct png_file_tag {
+    int32_t iPos; // current file position
+    int32_t iSize; // file size
+    uint8_t * pData; // memory file pointer
+    void * fHandle; // class pointer to File/SdFat or whatever you want
 } PNGFILE;
 
 // Callback function prototypes
-typedef int32_t (PNG_READ_CALLBACK)(PNGFILE *pFile, uint8_t *pBuf, int32_t iLen);
-typedef int32_t (PNG_SEEK_CALLBACK)(PNGFILE *pFile, int32_t iPosition);
-typedef void * (PNG_OPEN_CALLBACK)(const char *szFilename, int32_t *pFileSize);
+typedef int32_t (PNG_READ_CALLBACK)(PNGFILE * pFile, uint8_t * pBuf, int32_t iLen);
+typedef int32_t (PNG_SEEK_CALLBACK)(PNGFILE * pFile, int32_t iPosition);
+typedef void * (PNG_OPEN_CALLBACK)(const char * szFilename, int32_t * pFileSize);
 typedef void (PNG_DRAW_CALLBACK)(PNGDRAW *);
-typedef void (PNG_CLOSE_CALLBACK)(void *pHandle);
+typedef void (PNG_CLOSE_CALLBACK)(void * pHandle);
 
 //
 // our private structure to hold a JPEG image decode state
 //
-typedef struct png_image_tag
-{
+typedef struct png_image_tag {
     int iWidth, iHeight; // image size
     uint8_t ucBpp, ucPixelType;
     uint8_t ucMemType;
-    uint8_t *pImage;
+    uint8_t * pImage;
     int iPitch; // bytes per line
     int iHasAlpha;
     int iInterlaced;
     uint32_t iTransparent; // transparent color index/value
     int iError;
-    PNG_READ_CALLBACK *pfnRead;
-    PNG_SEEK_CALLBACK *pfnSeek;
-    PNG_OPEN_CALLBACK *pfnOpen;
-    PNG_DRAW_CALLBACK *pfnDraw;
-    PNG_CLOSE_CALLBACK *pfnClose;
+    PNG_READ_CALLBACK * pfnRead;
+    PNG_SEEK_CALLBACK * pfnSeek;
+    PNG_OPEN_CALLBACK * pfnOpen;
+    PNG_DRAW_CALLBACK * pfnDraw;
+    PNG_CLOSE_CALLBACK * pfnClose;
     PNGFILE PNGFile;
     uint8_t ucZLIB[32768 + sizeof(struct inflate_state)]; // put this here to avoid needing malloc/free
     uint8_t ucPalette[1024];
@@ -163,49 +160,50 @@ typedef struct png_image_tag
 //
 class PNG
 {
-  public:
-    int openRAM(uint8_t *pData, int iDataSize, PNG_DRAW_CALLBACK *pfnDraw);
-    int openFLASH(uint8_t *pData, int iDataSize, PNG_DRAW_CALLBACK *pfnDraw);
-    int open(const char *szFilename, PNG_OPEN_CALLBACK *pfnOpen, PNG_CLOSE_CALLBACK *pfnClose, PNG_READ_CALLBACK *pfnRead, PNG_SEEK_CALLBACK *pfnSeek, PNG_DRAW_CALLBACK *pfnDraw);
-    void close();
-    int decode(void *pUser, int iOptions);
-    int getWidth();
-    int getHeight();
-    int getBpp();
-    int hasAlpha();
-    uint32_t getTransparentColor();
-    int isInterlaced();
-    uint8_t * getPalette();
-    int getPixelType();
-    int getLastError();
-    int getBufferSize();
-    uint8_t *getBuffer();
-    void setBuffer(uint8_t *pBuffer);
-    uint8_t getAlphaMask(PNGDRAW *pDraw, uint8_t *pMask, uint8_t ucThreshold);
-    void getLineAsRGB565(PNGDRAW *pDraw, uint16_t *pPixels, int iEndianness, uint32_t u32Bkgd);
+    public:
+        int openRAM(uint8_t * pData, int iDataSize, PNG_DRAW_CALLBACK * pfnDraw);
+        int openFLASH(uint8_t * pData, int iDataSize, PNG_DRAW_CALLBACK * pfnDraw);
+        int open(const char * szFilename, PNG_OPEN_CALLBACK * pfnOpen, PNG_CLOSE_CALLBACK * pfnClose,
+                 PNG_READ_CALLBACK * pfnRead, PNG_SEEK_CALLBACK * pfnSeek, PNG_DRAW_CALLBACK * pfnDraw);
+        void close();
+        int decode(void * pUser, int iOptions);
+        int getWidth();
+        int getHeight();
+        int getBpp();
+        int hasAlpha();
+        uint32_t getTransparentColor();
+        int isInterlaced();
+        uint8_t * getPalette();
+        int getPixelType();
+        int getLastError();
+        int getBufferSize();
+        uint8_t * getBuffer();
+        void setBuffer(uint8_t * pBuffer);
+        uint8_t getAlphaMask(PNGDRAW * pDraw, uint8_t * pMask, uint8_t ucThreshold);
+        void getLineAsRGB565(PNGDRAW * pDraw, uint16_t * pPixels, int iEndianness, uint32_t u32Bkgd);
 
-  private:
-    PNGIMAGE _png;
+    private:
+        PNGIMAGE _png;
 };
 #else
 #define PNG_STATIC
-int PNG_openRAM(PNGIMAGE *pPNG, uint8_t *pData, int iDataSize, PNG_DRAW_CALLBACK *pfnDraw);
-int PNG_openFile(PNGIMAGE *pPNG, const char *szFilename);
-int PNG_getWidth(PNGIMAGE *pPNG);
-int PNG_getHeight(PNGIMAGE *pPNG);
-int PNG_decode(PNGIMAGE *pPNG, void *pUser, int iOptions);
-int DecodePNG(PNGIMAGE *pPage, void *pUser, int iOptions);
-void PNG_close(PNGIMAGE *pPNG);
-int PNG_getLastError(PNGIMAGE *pPNG);
-int PNG_getBpp(PNGIMAGE *pPNG);
-int PNG_getLastError(PNGIMAGE *pPNG);
-int PNG_getBufferSize(PNGIMAGE *pPNG);
-uint8_t *PNG_getPalette(PNGIMAGE *pPNG);
-int PNG_getPixelType(PNGIMAGE *pPNG);
-int PNG_hasAlpha(PNGIMAGE *pPNG);
-int PNG_isInterlaced(PNGIMAGE *pPNG);
-uint8_t *PNG_getBuffer(PNGIMAGE *pPNG);
-void PNG_setBuffer(PNGIMAGE *pPNG, uint8_t *pBuffer);
+int PNG_openRAM(PNGIMAGE * pPNG, uint8_t * pData, int iDataSize, PNG_DRAW_CALLBACK * pfnDraw);
+int PNG_openFile(PNGIMAGE * pPNG, const char * szFilename);
+int PNG_getWidth(PNGIMAGE * pPNG);
+int PNG_getHeight(PNGIMAGE * pPNG);
+int PNG_decode(PNGIMAGE * pPNG, void * pUser, int iOptions);
+int DecodePNG(PNGIMAGE * pPage, void * pUser, int iOptions);
+void PNG_close(PNGIMAGE * pPNG);
+int PNG_getLastError(PNGIMAGE * pPNG);
+int PNG_getBpp(PNGIMAGE * pPNG);
+int PNG_getLastError(PNGIMAGE * pPNG);
+int PNG_getBufferSize(PNGIMAGE * pPNG);
+uint8_t * PNG_getPalette(PNGIMAGE * pPNG);
+int PNG_getPixelType(PNGIMAGE * pPNG);
+int PNG_hasAlpha(PNGIMAGE * pPNG);
+int PNG_isInterlaced(PNGIMAGE * pPNG);
+uint8_t * PNG_getBuffer(PNGIMAGE * pPNG);
+void PNG_setBuffer(PNGIMAGE * pPNG, uint8_t * pBuffer);
 #endif // __cplusplus
 
 // Due to unaligned memory causing an exception, we have to do these macros the slow way

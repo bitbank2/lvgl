@@ -30,7 +30,7 @@ static lv_result_t decoder_info(lv_image_decoder_t * decoder, const void * src, 
 static lv_result_t decoder_open(lv_image_decoder_t * decoder, lv_image_decoder_dsc_t * dsc);
 static void decoder_close(lv_image_decoder_t * dec, lv_image_decoder_dsc_t * dsc);
 static void convert_color_depth(uint8_t * img_p, uint32_t px_cnt);
-static lv_draw_buf_t * decode_png_data(PNGIMAGE *png, const void * png_data, size_t png_data_size);
+static lv_draw_buf_t * decode_png_data(PNGIMAGE * png, const void * png_data, size_t png_data_size);
 /**********************
  *  STATIC VARIABLES
  **********************/
@@ -154,10 +154,10 @@ static lv_result_t decoder_open(lv_image_decoder_t * decoder, lv_image_decoder_d
 
     uint8_t * png_data = NULL;
     size_t png_data_size = 0;
-    PNGIMAGE *png = NULL;
+    PNGIMAGE * png = NULL;
 
     png = (PNGIMAGE *)lv_malloc(sizeof(PNGIMAGE));
-    if (!png) {
+    if(!png) {
         LV_LOG_WARN("allocation of PNGIMAGE structure failed\n");
         return LV_RESULT_INVALID; // not enough memory for PNGIMAGE structure
     }
@@ -181,7 +181,7 @@ static lv_result_t decoder_open(lv_image_decoder_t * decoder, lv_image_decoder_d
             lv_fs_tell(&f, &u32Size); /* Get the file size */
             lv_fs_seek(&f, 0, LV_FS_SEEK_SET);
             png_data = (uint8_t *)lv_malloc(u32Size);
-            if (!png_data) { /* Not enough RAM */
+            if(!png_data) {  /* Not enough RAM */
                 lv_fs_close(&f);
                 lv_free(png);
                 return LV_RESULT_INVALID;
@@ -198,7 +198,7 @@ static lv_result_t decoder_open(lv_image_decoder_t * decoder, lv_image_decoder_d
     }
     else if(dsc->src_type == LV_IMAGE_SRC_VARIABLE) {
         const lv_image_dsc_t * img_dsc = dsc->src;
-        png_data = (uint8_t*)img_dsc->data;
+        png_data = (uint8_t *)img_dsc->data;
         png_data_size = img_dsc->data_size;
     }
     else {
@@ -237,14 +237,14 @@ static lv_result_t decoder_open(lv_image_decoder_t * decoder, lv_image_decoder_d
     search_key.src_type = dsc->src_type;
     search_key.src = dsc->src;
     search_key.slot.size = decoded->data_size;
-        
+
     lv_cache_entry_t * entry = lv_image_decoder_add_to_cache(decoder, &search_key, decoded, NULL);
-            
+
     if(entry == NULL) {
         return LV_RESULT_INVALID;
-    }           
+    }
     dsc->cache_entry = entry;
-#endif          
+#endif
 
     return LV_RESULT_OK;    /*If not returned earlier then it failed*/
 }
@@ -265,24 +265,24 @@ static void decoder_close(lv_image_decoder_t * decoder, lv_image_decoder_dsc_t *
         lv_cache_release(dsc->cache, dsc->cache_entry, NULL);
 }
 
-static lv_draw_buf_t * decode_png_data(PNGIMAGE *png, const void * png_data, size_t png_data_size)
+static lv_draw_buf_t * decode_png_data(PNGIMAGE * png, const void * png_data, size_t png_data_size)
 {
     lv_draw_buf_t * decoded = NULL;
     int rc, iPaletteSize = 0;
-    uint8_t *pOut;
+    uint8_t * pOut;
 
     /*Decode the image*/
     rc = PNG_openRAM(png, (uint8_t *)png_data, (int)png_data_size, NULL);
-    if (rc != PNG_SUCCESS) {
+    if(rc != PNG_SUCCESS) {
         LV_LOG_WARN("PNG_openRAM failed, rc = %d\n", rc);
         return NULL;
     }
-    if (png->ucPixelType == PNG_PIXEL_INDEXED) { // add size of palette
+    if(png->ucPixelType == PNG_PIXEL_INDEXED) {  // add size of palette
         iPaletteSize = 4 << (png->ucBpp);
     }
     /*Allocate a full frame buffer as needed*/
     pOut = lv_malloc(iPaletteSize + (png->iPitch * png->iHeight));
-    if (!pOut) { // no memory
+    if(!pOut) {  // no memory
         return NULL;
     }
     png->pImage = &pOut[iPaletteSize]; // palette comes first
@@ -293,7 +293,7 @@ static lv_draw_buf_t * decode_png_data(PNGIMAGE *png, const void * png_data, siz
         return NULL;
     }
     decoded = (lv_draw_buf_t *)lv_malloc(sizeof(lv_draw_buf_t));
-    if (!decoded) {
+    if(!decoded) {
         lv_free(pOut); // ran out of memory
         png->pImage = NULL;
         return NULL;
@@ -303,36 +303,43 @@ static lv_draw_buf_t * decode_png_data(PNGIMAGE *png, const void * png_data, siz
     decoded->header.w = png->iWidth;
     decoded->header.h = png->iHeight;
     decoded->header.flags = LV_IMAGE_FLAGS_ALLOCATED;
-    if (png->ucPixelType == PNG_PIXEL_TRUECOLOR_ALPHA) {
+    if(png->ucPixelType == PNG_PIXEL_TRUECOLOR_ALPHA) {
         decoded->header.cf = LV_COLOR_FORMAT_ARGB8888;
-    } else if (png->ucPixelType == PNG_PIXEL_TRUECOLOR) {
+    }
+    else if(png->ucPixelType == PNG_PIXEL_TRUECOLOR) {
         decoded->header.cf = LV_COLOR_FORMAT_RGB888;
-    } else if (png->ucPixelType == PNG_PIXEL_GRAYSCALE) {
+    }
+    else if(png->ucPixelType == PNG_PIXEL_GRAYSCALE) {
         decoded->header.cf = LV_COLOR_FORMAT_L8;
-    } else if (png->ucPixelType == PNG_PIXEL_INDEXED) {
+    }
+    else if(png->ucPixelType == PNG_PIXEL_INDEXED) {
         // copy the color palette to the start of the buffer
-        uint8_t *s0, *s1, *d;
+        uint8_t * s0, * s1, * d;
         s0 = png->ucPalette; // RGB24 colors
         s1 = &png->ucPalette[768]; // alpha values
         d = pOut;
-        for (int i=0; i<(1<<png->ucBpp); i++) {
-            d[0] = s0[0]; d[1] = s0[1]; d[2] = s0[2];
+        for(int i = 0; i < (1 << png->ucBpp); i++) {
+            d[0] = s0[0];
+            d[1] = s0[1];
+            d[2] = s0[2];
             d[3] = s1[0];
-            s0 += 3; s1++; d += 4;
+            s0 += 3;
+            s1++;
+            d += 4;
         }
-        switch (png->ucBpp) {
+        switch(png->ucBpp) {
             case 1:
-               decoded->header.cf = LV_COLOR_FORMAT_I1;
-               break;
+                decoded->header.cf = LV_COLOR_FORMAT_I1;
+                break;
             case 2:
-               decoded->header.cf = LV_COLOR_FORMAT_I2;
-               break;
+                decoded->header.cf = LV_COLOR_FORMAT_I2;
+                break;
             case 4:
-               decoded->header.cf = LV_COLOR_FORMAT_I4;
-               break;
+                decoded->header.cf = LV_COLOR_FORMAT_I4;
+                break;
             case 8:
-               decoded->header.cf = LV_COLOR_FORMAT_I8;
-               break;
+                decoded->header.cf = LV_COLOR_FORMAT_I8;
+                break;
         }
     }
     decoded->header.magic = LV_IMAGE_HEADER_MAGIC;
@@ -341,7 +348,7 @@ static lv_draw_buf_t * decode_png_data(PNGIMAGE *png, const void * png_data, siz
     decoded->unaligned_data = pOut;
 
     /*if 32-bpp, swap R/B*/
-    if (png->ucPixelType == PNG_PIXEL_TRUECOLOR_ALPHA) {
+    if(png->ucPixelType == PNG_PIXEL_TRUECOLOR_ALPHA) {
         convert_color_depth(decoded->data,  png->iWidth * png->iHeight);
     }
 
