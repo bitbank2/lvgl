@@ -11,7 +11,7 @@
 #ifdef __GNUC__
     #pragma GCC optimize("O2")
 #endif
-
+#include <stdint.h>
 /*
  * If you *really* need a unique prefix for all types and library functions,
  * compile with -DZ_PREFIX. The "standard" zlib should be compiled without it.
