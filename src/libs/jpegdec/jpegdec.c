@@ -740,6 +740,7 @@ static int32_t readRAM(JPEGFILE * pFile, uint8_t * pBuf, int32_t iLen)
     return iBytesRead;
 } /* readRAM() */
 
+#ifdef FUTURE
 static int32_t readFLASH(JPEGFILE * pFile, uint8_t * pBuf, int32_t iLen)
 {
     int32_t iBytesRead;
@@ -753,6 +754,7 @@ static int32_t readFLASH(JPEGFILE * pFile, uint8_t * pBuf, int32_t iLen)
     pFile->iPos += iBytesRead;
     return iBytesRead;
 } /* readFLASH() */
+#endif
 
 static int32_t seekMem(JPEGFILE * pFile, int32_t iPosition)
 {
@@ -1118,7 +1120,7 @@ static int JPEGMakeHuffTables(JPEGIMAGE * pJPEG, int bThumbnail)
             pBits = &pHuffVals[(iTable + 4) * HUFF_TABLEN];
             p = pBits;
             p += 16; // point to bit data
-            if(iTable * HUFF11SIZE >= sizeof(pJPEG->usHuffAC) / 2)
+            if(iTable * HUFF11SIZE >= (int)sizeof(pJPEG->usHuffAC) / 2)
                 return 0;
             pShort = &pJPEG->usHuffAC[iTable * HUFF11SIZE];
             pLong = &pJPEG->usHuffAC[iTable * HUFF11SIZE + 1024];
@@ -1344,7 +1346,7 @@ static int JPEGFilter(uint8_t * pBuf, uint8_t * d, int iLen, uint8_t * bFF)
 {
 #ifdef HAS_SSE
     __m128i xmmIn, xmmOut;
-    __m128i xmmFF = _mm_cmpeq_epi8(xmmIn, xmmIn);
+    __m128i xmmFF = _mm_set1_epi8(0xff);
 #endif // HAS_SSE
 #ifdef HAS_NEON
     uint8x16_t u816FF = vdupq_n_u8(0xff);
@@ -1861,8 +1863,10 @@ mcu_done:
 static void JPEGIDCT(JPEGIMAGE * pJPEG, int iMCUOffset, int iQuantTable)
 {
     int iRow;
+#if !defined (HAS_SSE) && !defined(HAS_NEON)
     unsigned char ucColMask;
     int iCol;
+#endif
     signed int tmp6, tmp7, tmp10, tmp11, tmp12, tmp13;
     signed int z5, z10, z11, z12, z13;
     signed int tmp0, tmp1, tmp2, tmp3, tmp4, tmp5;
