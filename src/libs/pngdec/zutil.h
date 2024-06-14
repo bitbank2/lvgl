@@ -29,7 +29,7 @@
         #include <stddef.h>
     #endif
 //    #include <string.h>
-    #include <stdlib.h>
+//    #include <stdlib.h>
 #endif
 
 #ifdef Z_SOLO
