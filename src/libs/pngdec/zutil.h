@@ -21,11 +21,14 @@
 
 #include "zlib.h"
 
+// some targets have trouble with string.h
+#define NO_MEMCPY
+
 #if defined(STDC) && !defined(Z_SOLO)
     #if !(defined(_WIN32_WCE) && defined(_MSC_VER))
         #include <stddef.h>
     #endif
-    #include <string.h>
+//    #include <string.h>
     #include <stdlib.h>
 #endif
 
