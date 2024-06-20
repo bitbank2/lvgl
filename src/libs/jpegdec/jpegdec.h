@@ -16,9 +16,7 @@
 // fixed to Linux for LVGL
 #define __LINUX__
 #if defined( __MACH__ ) || defined( __LINUX__ ) || defined( __MCUXPRESSO ) || defined( ESP_PLATFORM )
-    #include <stdlib.h>
     #include <string.h>
-    #include <stdint.h>
     #include <stdio.h>
 #else
     #include <Arduino.h>
