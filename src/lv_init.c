@@ -20,7 +20,6 @@
 #include "libs/tjpgd/lv_tjpgd.h"
 #include "libs/libjpeg_turbo/lv_libjpeg_turbo.h"
 #include "libs/lodepng/lv_lodepng.h"
-#include "libs/pngdec/lv_pngdec.h"
 #include "libs/libpng/lv_libpng.h"
 #include "libs/jpegdec/lv_jpegdec.h"
 #include "draw/lv_draw.h"
@@ -285,10 +284,6 @@ void lv_init(void)
 
 #if LV_USE_FS_ARDUINO_SD
     lv_fs_arduino_sd_init();
-#endif
-
-#if LV_USE_PNGDEC
-    lv_pngdec_init();
 #endif
 
 #if LV_USE_JPEGDEC

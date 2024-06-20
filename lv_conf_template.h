@@ -704,9 +704,6 @@
 /*LODEPNG decoder library*/
 #define LV_USE_LODEPNG 0
 
-/*PNGDEC decoder library*/
-#define LV_USE_PNGDEC 0
-
 /*PNG decoder(libpng) library*/
 #define LV_USE_LIBPNG 0
 
