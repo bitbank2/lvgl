@@ -18,7 +18,6 @@
 #if defined( __MACH__ ) || defined( __LINUX__ ) || defined( __MCUXPRESSO ) || defined( ESP_PLATFORM )
     #include "../../stdlib/lv_string.h"
     #include <stdint.h>
-    #include <stdio.h>
 #else
     #include <Arduino.h>
     #if !defined(HAL_ESP32_HAL_H_) && defined(__has_include) && __has_include(<FS.h>)
@@ -269,7 +268,6 @@ int JPEG_openRAM(JPEGIMAGE * pJPEG, uint8_t * pData, int iDataSize, JPEG_DRAW_CA
 void JPEG_setFramebuffer(JPEGIMAGE * pJPEG, void * pFramebuffer);
 void JPEG_setCropArea(JPEGIMAGE * pJPEG, int x, int y, int w, int h);
 void JPEG_getCropArea(JPEGIMAGE * pJPEG, int * x, int * y, int * w, int * h);
-int JPEG_openFile(JPEGIMAGE * pJPEG, const char * szFilename, JPEG_DRAW_CALLBACK * pfnDraw);
 int JPEG_getWidth(JPEGIMAGE * pJPEG);
 int JPEG_getHeight(JPEGIMAGE * pJPEG);
 int JPEG_decode(JPEGIMAGE * pJPEG, int x, int y, int iOptions);
