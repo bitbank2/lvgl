@@ -42,11 +42,6 @@ static void JPEGGetMoreData(JPEGIMAGE * pPage);
 static int DecodeJPEG(JPEGIMAGE * pImage);
 static int32_t readRAM(JPEGFILE * pFile, uint8_t * pBuf, int32_t iLen);
 static int32_t seekMem(JPEGFILE * pFile, int32_t iPosition);
-#if defined (__MACH__) || defined( __LINUX__ ) || defined( __MCUXPRESSO )
-    static int32_t readFile(JPEGFILE * pFile, uint8_t * pBuf, int32_t iLen);
-    static int32_t seekFile(JPEGFILE * pFile, int32_t iPosition);
-    static void closeFile(void * handle);
-#endif
 static void JPEGDither(JPEGIMAGE * pJPEG, int iWidth, int iHeight);
 /* JPEG tables */
 // zigzag ordering of DCT coefficients
@@ -3727,13 +3722,13 @@ static void JPEGPutMCU22(JPEGIMAGE * pJPEG, int x, int iPitch)
         if(iCol >= 4) {
             iXCount1 = 4;
             iXCount2 = iCol - 4;
-            if(pJPEG->iWidth & 1 && (iXCount2 * 2) + 8 + (x * 16) > pJPEG->iWidth)
+            if((pJPEG->iWidth & 1) && (iXCount2 * 2) + 8 + (x * 16) > pJPEG->iWidth)
                 bUseOdd2 = 0;
         }
         else {
             iXCount1 = iCol;
             iXCount2 = 0;
-            if(pJPEG->iWidth & 1 && (iXCount1 * 2) + (x * 16) > pJPEG->iWidth)
+            if((pJPEG->iWidth & 1) && (iXCount1 * 2) + (x * 16) > pJPEG->iWidth)
                 bUseOdd1 = 0;
         }
     }

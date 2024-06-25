@@ -79,8 +79,8 @@ static lv_result_t decoder_info(lv_image_decoder_t * decoder, const void * src, 
     LV_UNUSED(decoder); /*Unused*/
     uint8_t cBuf[32];
     uint16_t w = 0, h = 0, iMarker = 0;
-    int iBpp;
-    int i = 2, j = 2; /* Offset of first marker */
+    int32_t iBpp;
+    uint32_t i = 2, j = 2; /* Offset of first marker */
     lv_fs_file_t f;
     lv_fs_res_t res;
     uint32_t rn, iFileSize;
@@ -100,7 +100,7 @@ static lv_result_t decoder_info(lv_image_decoder_t * decoder, const void * src, 
         lv_fs_read(&f, cBuf, sizeof(cBuf), &rn);
     }
     else {
-        memcpy(cBuf, img_dsc->data, sizeof(cBuf));
+        lv_memcpy(cBuf, img_dsc->data, sizeof(cBuf));
         iFileSize = img_dsc->data_size;
     }
 
@@ -120,7 +120,7 @@ static lv_result_t decoder_info(lv_image_decoder_t * decoder, const void * src, 
                     lv_fs_read(&f, cBuf, sizeof(cBuf), &rn);
                 }
                 else {
-                    memcpy(cBuf, &img_dsc->data[j], sizeof(cBuf));
+                    lv_memcpy(cBuf, &img_dsc->data[j], sizeof(cBuf));
                 }
                 i = 0;
             }
