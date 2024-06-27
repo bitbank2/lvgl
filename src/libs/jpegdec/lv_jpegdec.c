@@ -92,11 +92,14 @@ static lv_result_t decoder_info(lv_image_decoder_t * decoder, const void * src, 
         const char * fn = src;
         /* Read the width and height from the file */
         res = lv_fs_open(&f, fn, LV_FS_MODE_RD);
+        if (res != LV_FS_RES_OK) {
+            LV_LOG_WARN("Can't open %s, result: %d", fn, res);
+            return LV_RESULT_INVALID;
+        }
         lv_fs_seek(&f, 0, LV_FS_SEEK_END);
         lv_fs_tell(&f, &rn);
         lv_fs_seek(&f, 0, LV_FS_SEEK_SET);
         iFileSize = (int)rn;
-        if(res != LV_FS_RES_OK) return LV_RESULT_INVALID;
         lv_fs_read(&f, cBuf, sizeof(cBuf), &rn);
     }
     else {

@@ -370,6 +370,10 @@ void lv_deinit(void)
     lv_theme_default_deinit();
 #endif
 
+#if LV_USE_JPEGDEC
+    lv_jpegdec_deinit();
+#endif
+
 #if LV_USE_THEME_SIMPLE
     lv_theme_simple_deinit();
 #endif
