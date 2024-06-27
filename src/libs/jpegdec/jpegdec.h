@@ -13,6 +13,8 @@
 //
 #ifndef __JPEGDEC__
 #define __JPEGDEC__
+#include "../../../lvgl.h"
+#if LV_USE_JPEGDEC
 // fixed to Linux for LVGL
 #define __LINUX__
 #if defined( __MACH__ ) || defined( __LINUX__ ) || defined( __MCUXPRESSO ) || defined( ESP_PLATFORM )
@@ -301,5 +303,5 @@ void JPEG_setMaxOutputSize(JPEGIMAGE * pJPEG, int iMaxMCUs);
     #define MOTOSHORT(p) (((*(p))<<8) + (*(p+1)))
     #define MOTOLONG(p) (((*p)<<24) + ((*(p+1))<<16) + ((*(p+2))<<8) + (*(p+3)))
 #endif // ALLOWS_UNALIGNED
-
+#endif // LV_USE_JPEGDEC
 #endif // __JPEGDEC__

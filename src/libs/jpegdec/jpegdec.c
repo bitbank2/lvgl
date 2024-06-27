@@ -21,6 +21,7 @@
 //===========================================================================
 //
 #include "jpegdec.h"
+#if LV_USE_JPEGDEC
 
 #if defined( __x86_64__ ) && !defined(NO_SIMD)
     #define HAS_SSE
@@ -4618,3 +4619,4 @@ static int DecodeJPEG(JPEGIMAGE * pJPEG)
         pJPEG->iError = JPEG_DECODE_ERROR;
     return (iErr == 0);
 } /* DecodeJPEG() */
+#endif // LV_USE_JPEGDEC
