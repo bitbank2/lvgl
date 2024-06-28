@@ -2965,7 +2965,7 @@ static void JPEGPutMCU11(JPEGIMAGE * pJPEG, int x, int iPitch)
                 iCr = *pCr++;
                 iCb = *pCb++;
                 Y = (int)(*pY++) << 12;
-                if (x + iCol < pJPEG->iWidth) {
+                if(x + iCol < pJPEG->iWidth) {
                     JPEGPixelLE(pOutput + iCol, Y, iCb, iCr);
                 }
             } // for col
@@ -2975,7 +2975,7 @@ static void JPEGPutMCU11(JPEGIMAGE * pJPEG, int x, int iPitch)
                 iCr = *pCr++;
                 iCb = *pCb++;
                 Y = (int)(*pY++) << 12;
-                if (x + iCol < pJPEG->iWidth) {
+                if(x + iCol < pJPEG->iWidth) {
                     JPEGPixelBE(pOutput + iCol, Y, iCb, iCr);
                 }
             } // for col
@@ -2985,7 +2985,7 @@ static void JPEGPutMCU11(JPEGIMAGE * pJPEG, int x, int iPitch)
                 iCr = *pCr++;
                 iCb = *pCb++;
                 Y = (int)(*pY++) << 12;
-                if (x + iCol < pJPEG->iWidth) {
+                if(x + iCol < pJPEG->iWidth) {
                     JPEGPixelRGB((uint32_t *)&pOutput[iCol * 2], Y, iCb, iCr);
                 }
             } // for col
