@@ -2965,7 +2965,9 @@ static void JPEGPutMCU11(JPEGIMAGE * pJPEG, int x, int iPitch)
                 iCr = *pCr++;
                 iCb = *pCb++;
                 Y = (int)(*pY++) << 12;
-                JPEGPixelLE(pOutput + iCol, Y, iCb, iCr);
+                if (x + iCol < pJPEG->iWidth) {
+                    JPEGPixelLE(pOutput + iCol, Y, iCb, iCr);
+                }
             } // for col
         }
         else if(pJPEG->ucPixelType == RGB565_BIG_ENDIAN) {
@@ -2973,7 +2975,9 @@ static void JPEGPutMCU11(JPEGIMAGE * pJPEG, int x, int iPitch)
                 iCr = *pCr++;
                 iCb = *pCb++;
                 Y = (int)(*pY++) << 12;
-                JPEGPixelBE(pOutput + iCol, Y, iCb, iCr);
+                if (x + iCol < pJPEG->iWidth) {
+                    JPEGPixelBE(pOutput + iCol, Y, iCb, iCr);
+                }
             } // for col
         }
         else {   // RGB888
@@ -2981,7 +2985,9 @@ static void JPEGPutMCU11(JPEGIMAGE * pJPEG, int x, int iPitch)
                 iCr = *pCr++;
                 iCb = *pCb++;
                 Y = (int)(*pY++) << 12;
-                JPEGPixelRGB((uint32_t *)&pOutput[iCol * 2], Y, iCb, iCr);
+                if (x + iCol < pJPEG->iWidth) {
+                    JPEGPixelRGB((uint32_t *)&pOutput[iCol * 2], Y, iCb, iCr);
+                }
             } // for col
         }
         pOutput += (pJPEG->ucPixelType == RGB8888) ? iPitch * 2 : iPitch;
@@ -4351,14 +4357,14 @@ static int DecodeJPEG(JPEGIMAGE * pJPEG)
         case 0x01: // fake value to handle sRGB/CMYK
         case 0x11:
             cx = (pJPEG->iWidth + 7) >> 3;  // number of MCU blocks
-            cy = (pJPEG->iCropY + pJPEG->iCropCY) >> 3;
+            cy = (pJPEG->iCropY + pJPEG->iCropCY + 7) >> 3;
             iCr = MCU1;
             iCb = MCU2;
             mcuCX = mcuCY = 8;
             break;
         case 0x12:
             cx = (pJPEG->iWidth + 7) >> 3;  // number of MCU blocks
-            cy = (pJPEG->iCropY + pJPEG->iCropCY) >> 4;
+            cy = (pJPEG->iCropY + pJPEG->iCropCY + 15) >> 4;
             iCr = MCU2;
             iCb = MCU3;
             mcuCX = 8;
@@ -4366,7 +4372,7 @@ static int DecodeJPEG(JPEGIMAGE * pJPEG)
             break;
         case 0x21:
             cx = (pJPEG->iWidth + 15) >> 4;  // number of MCU blocks
-            cy = (pJPEG->iCropY + pJPEG->iCropCY) >> 3;
+            cy = (pJPEG->iCropY + pJPEG->iCropCY + 7) >> 3;
             iCr = MCU2;
             iCb = MCU3;
             mcuCX = 16;
@@ -4374,7 +4380,7 @@ static int DecodeJPEG(JPEGIMAGE * pJPEG)
             break;
         case 0x22:
             cx = (pJPEG->iWidth + 15) >> 4;  // number of MCU blocks
-            cy = (pJPEG->iCropY + pJPEG->iCropCY) >> 4;
+            cy = (pJPEG->iCropY + pJPEG->iCropCY + 15) >> 4;
             iCr = MCU4;
             iCb = MCU5;
             mcuCX = mcuCY = 16;

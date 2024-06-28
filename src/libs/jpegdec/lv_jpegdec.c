@@ -298,7 +298,7 @@ static lv_draw_buf_t * decode_jpeg_data(JPEGIMAGE * jpg, const void * jpeg_data,
         return NULL;
     }
     /*Allocate a full frame buffer as needed*/
-    pOut = lv_malloc(jpg->iWidth * jpg->iHeight * iBPP);
+    pOut = lv_malloc(jpg->iWidth * ((jpg->iHeight+15) & 0xfff0) * iBPP);
     if(!pOut) {  // no memory
         return NULL;
     }
