@@ -23,19 +23,24 @@
 #include "jpegdec.h"
 #if LV_USE_JPEGDEC
 
-#if defined( __x86_64__ ) && !defined(NO_SIMD)
-    #define HAS_SSE
-    #include <emmintrin.h>
-    #include <tmmintrin.h>
-    #include <smmintrin.h>
+// Disable SIMD for now
+//#if defined( __x86_64__ ) && !defined(NO_SIMD)
+//    #define HAS_SSE
+//    #include <emmintrin.h>
+//    #include <tmmintrin.h>
+//    #include <smmintrin.h>
     //#include <immintrin.h> // AVX2
+//#endif
+#ifdef HAS_SSE
+#undef HAS_SSE
 #endif
-
-#if !defined(HAS_SIMD) && !defined(NO_SIMD) && (defined(__arm64__) || defined(__aarch64__))
-    #include <arm_neon.h>
-    #define HAS_NEON
+//#if !defined(HAS_SIMD) && !defined(NO_SIMD) && (defined(__arm64__) || defined(__aarch64__))
+//    #include <arm_neon.h>
+//    #define HAS_NEON
+//#endif
+#ifdef HAS_NEON
+#undef HAS_NEON
 #endif
-
 // forward references
 static int JPEGInit(JPEGIMAGE * pJPEG);
 static int JPEGParseInfo(JPEGIMAGE * pPage, int bExtractThumb);
