@@ -29,17 +29,17 @@
 //    #include <emmintrin.h>
 //    #include <tmmintrin.h>
 //    #include <smmintrin.h>
-    //#include <immintrin.h> // AVX2
+//#include <immintrin.h> // AVX2
 //#endif
 #ifdef HAS_SSE
-#undef HAS_SSE
+    #undef HAS_SSE
 #endif
 //#if !defined(HAS_SIMD) && !defined(NO_SIMD) && (defined(__arm64__) || defined(__aarch64__))
 //    #include <arm_neon.h>
 //    #define HAS_NEON
 //#endif
 #ifdef HAS_NEON
-#undef HAS_NEON
+    #undef HAS_NEON
 #endif
 // forward references
 static int JPEGInit(JPEGIMAGE * pJPEG);
