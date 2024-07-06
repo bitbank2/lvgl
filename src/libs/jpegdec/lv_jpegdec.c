@@ -151,7 +151,7 @@ static lv_result_t decoder_info(lv_image_decoder_t * decoder, const void * src, 
             else if(LV_COLOR_DEPTH == 16)
                 header->cf = LV_COLOR_FORMAT_RGB565;
             else
-                header->cf = LV_COLOR_FORMAT_ARGB8888;
+                header->cf = LV_COLOR_FORMAT_XRGB8888;
             header->w = w;
             header->h = h;
             return LV_RESULT_OK;
@@ -326,7 +326,7 @@ static lv_draw_buf_t * decode_jpeg_data(JPEGIMAGE * jpg, const void * jpeg_data,
     decoded->header.h = jpg->iHeight;
     decoded->header.flags = LV_IMAGE_FLAGS_ALLOCATED;
     if(iBPP == 4) {
-        decoded->header.cf = LV_COLOR_FORMAT_ARGB8888;
+        decoded->header.cf = LV_COLOR_FORMAT_XRGB8888;
     }
     else if(iBPP == 2) {
         decoded->header.cf = LV_COLOR_FORMAT_RGB565;
