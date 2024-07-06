@@ -234,7 +234,7 @@ static lv_result_t decoder_open(lv_image_decoder_t * decoder, lv_image_decoder_d
         LV_LOG_WARN("Error decoding JPEG\n");
         return LV_RESULT_INVALID;
     }
-    LV_LOG_WARN("jpeg decode succeeded\n");
+    LV_LOG_INFO("jpeg decode succeeded\n");
     lv_draw_buf_t * adjusted = lv_image_decoder_post_process(dsc, decoded);
     if(adjusted == NULL) {
         LV_LOG_WARN("jpeg post process failed\n");
@@ -279,10 +279,8 @@ static void decoder_close(lv_image_decoder_t * decoder, lv_image_decoder_dsc_t *
 {
     LV_UNUSED(decoder);
 
-    if(dsc->args.no_cache || LV_CACHE_DEF_SIZE == 0)
-        lv_draw_buf_destroy((lv_draw_buf_t *)dsc->decoded);
-    else
-        lv_cache_release(dsc->cache, dsc->cache_entry, NULL);
+    if(dsc->args.no_cache || !lv_image_cache_is_enabled()) lv_draw_buf_destroy((lv_draw_buf_t *)dsc->decoded);
+
 }
 
 static lv_draw_buf_t * decode_jpeg_data(JPEGIMAGE * jpg, const void * jpeg_data, size_t jpeg_data_size, int iBPP)
