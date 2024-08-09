@@ -57,7 +57,9 @@
 #define DCTSIZE 64
 #define MAX_MCU_COUNT 6
 #define MAX_COMPS_IN_SCAN 4
-#define MAX_BUFFERED_PIXELS 2048
+//#define MAX_BUFFERED_PIXELS 2048
+// LVGL doesn't use the callback function, so we don't need this buffer
+#define MAX_BUFFERED_PIXELS 16
 #define MCU_SKIP -8
 
 // Decoder options
